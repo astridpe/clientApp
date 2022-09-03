@@ -16,10 +16,34 @@ namespace Controllers
             _customerDB = customerDb;
         }
 
+        public bool Save(Customer customer)
+        {
+            try
+            {
+                _customerDB.Add(customer);
+                _customerDB.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
+        }
+
         public List<Customer> getAllCustomers()
         {
-            List<Customer> allCustomers = _customerDB.Customers.ToList();
-            return allCustomers;
+            try
+            {
+                List<Customer> allCustomers = _customerDB.Customers.ToList();
+                return allCustomers;
+
+            }
+            catch
+            {
+                return null;
+            }
+           
          }
         
     }
