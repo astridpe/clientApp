@@ -1,0 +1,32 @@
+CRUD Operations in the Entity Framework
+
+Create:
+
+- For Lists (to manipulate the data at a later time):
+	List<Customers> allCustomers = db.Customers.ToList();
+
+- For EInumerable (to just create a table): 
+	IEnumerable<Customers> allCustomers = db.Customers;
+
+
+
+Read:
+Order order1 = db.Order.FirstOrDefault(product => product.name = "Newspaper"); 
+
+OR
+
+Order order1 = db.Order.Find(primaryKey);
+
+
+
+Update:
+Order order1 = db.Order.Find(primaryKey);
+Order1.productName = "new product name";
+db.SaveChanges();
+
+
+
+Remove:
+Order order1 = db.Order.Find(primaryKey);
+db.Order.Remove(order1);
+db.SaveChanges();
