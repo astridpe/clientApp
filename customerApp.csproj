@@ -9,8 +9,14 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'kundeApp_v1' " />
   <ItemGroup>
     <None Remove="Controllers\" />
+    <None Remove="Microsoft.EntityFrameworkCore" />
+    <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
   </ItemGroup>
 </Project>
