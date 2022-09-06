@@ -8,20 +8,20 @@ namespace Controllers
     [Route("[controller]/[action]")]
     public class customerController : ControllerBase
     {
-        private readonly CustomerDB _customerDB;
+        private readonly CustomerDB _db;
 
 
-        public customerController(CustomerDB customerDb)
+        public customerController(CustomerDB db)
         {
-            _customerDB = customerDb;
+            _db = db;
         }
 
         public bool Save(Customer customer)
         {
             try
             {
-                _customerDB.Add(customer);
-                _customerDB.SaveChanges();
+                _db.Customers.Add(customer);
+                _db.SaveChanges();
                 return true;
             }
             catch
@@ -31,11 +31,11 @@ namespace Controllers
             
         }
 
-        public List<Customer> getAllCustomers()
+        public List<Customer> GetAllCustomers()
         {
             try
             {
-                List<Customer> allCustomers = _customerDB.Customers.ToList();
+                List<Customer> allCustomers = _db.Customers.ToList();
                 return allCustomers;
 
             }
@@ -45,6 +45,51 @@ namespace Controllers
             }
            
          }
+
+        public bool Delete(int id)
+        {
+            try
+            {
+                Customer oneCustomer = _db.Customers.Find(id);
+                _db.Customers.Remove(oneCustomer);
+                _db.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public Customer GetOne(int id)
+        {
+            try
+            {
+                Customer oneCustomer = _db.Customers.Find(id);
+                return oneCustomer;
+
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public bool Edit(Customer editCustomer)
+        {
+            try
+            {
+                Customer oneCustomer = _db.Customers.Find(editCustomer.id);
+                oneCustomer.name = editCustomer.name;
+                oneCustomer.address = editCustomer.address;
+                _db.SaveChanges();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         
     }
 }
