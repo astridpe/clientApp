@@ -2,6 +2,7 @@
 using Model;
 using Microsoft.AspNetCore.Mvc;
 using customerApp.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace Controllers
 {
@@ -16,12 +17,12 @@ namespace Controllers
             _db = db;
         }
 
-        public bool Save(Customer customer)
+        public async Task<bool> Save(Customer customer)
         {
             try
             {
                 _db.Customers.Add(customer);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch
@@ -31,11 +32,11 @@ namespace Controllers
             
         }
 
-        public List<Customer> GetAllCustomers()
+        public async Task<List<Customer>> GetAllCustomers()
         {
             try
             {
-                List<Customer> allCustomers = _db.Customers.ToList();
+                List<Customer> allCustomers = await _db.Customers.ToListAsync();
                 return allCustomers;
 
             }
@@ -46,13 +47,13 @@ namespace Controllers
            
          }
 
-        public bool Delete(int id)
+        public async Task <bool> Delete(int id)
         {
             try
             {
-                Customer oneCustomer = _db.Customers.Find(id);
+                Customer oneCustomer = await _db.Customers.FindAsync(id);
                 _db.Customers.Remove(oneCustomer);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch
@@ -61,11 +62,11 @@ namespace Controllers
             }
         }
 
-        public Customer GetOne(int id)
+        public async Task <Customer> GetOne(int id)
         {
             try
             {
-                Customer oneCustomer = _db.Customers.Find(id);
+                Customer oneCustomer = await _db.Customers.FindAsync(id);
                 return oneCustomer;
 
             }
@@ -75,14 +76,14 @@ namespace Controllers
             }
         }
 
-        public bool Edit(Customer editCustomer)
+        public async Task <bool> Edit(Customer editCustomer)
         {
             try
             {
-                Customer oneCustomer = _db.Customers.Find(editCustomer.id);
+                Customer oneCustomer = await _db.Customers.FindAsync(editCustomer.id);
                 oneCustomer.name = editCustomer.name;
                 oneCustomer.address = editCustomer.address;
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return true;
             }
             catch
