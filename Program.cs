@@ -11,10 +11,11 @@ IServiceCollection serviceCollection = builder.Services.AddDbContext<CustomerDB>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
+    DBInit.Initialize(app); // This must be removed if we want to keep the data in the database and not intitialize for each run.
 }
 
 app.UseHttpsRedirection();
