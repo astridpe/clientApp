@@ -1,7 +1,10 @@
 ﻿function saveCustomer() {
     const customer = {
-        name: $("#name").val(),
-        address: $("#address").val()
+        firstname: $("#firstname").val(),
+        lastname: $("#lastname").val(),
+        address: $("#address").val(),
+        zipCode: $("#zipCode").val(),
+        city: $("#city").val()
     }
     const url = "Customer/Save";
     $.post(url, customer, function (OK) {
