@@ -3,146 +3,45 @@ using Microsoft.AspNetCore.Mvc;
 using customerApp.Model;
 using Microsoft.EntityFrameworkCore;
 using Castle.Core.Resource;
+using customerApp.DAL;
 
 namespace Controllers
 {
     [Route("[controller]/[action]")]
     public class customerController : ControllerBase
     {
-        private readonly CustomerDB _db;
+        private readonly ICustomerRepository _db;
 
-
-        public customerController(CustomerDB db)
+        public customerController(ICustomerRepository db)
         {
             _db = db;
         }
 
         public async Task<bool> Save(Customer customer)
         {
-            try
-            {
-                var newCustommerField = new Customers();
-                newCustommerField.firstname = customer.firstname;
-                newCustommerField.lastname = customer.lastname;
-                newCustommerField.address = customer.address;
-
-                var existingPostalAdress = await _db.PostalAddresses.FindAsync(customer.zipCode);
-                if (existingPostalAdress == null)
-                {
-         
-                    var newPostalAdressesField = new PostalAddresses();
-                    newPostalAdressesField.zipCode = customer.zipCode;
-                    newPostalAdressesField.city = customer.city;
-                    newCustommerField.PostalAddress = newPostalAdressesField;
-                }
-                else
-                { 
-                    newCustommerField.PostalAddress = existingPostalAdress;
-                }
-                _db.Customers.Add(newCustommerField);
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            
+            return await _db.Save(customer);
         }
 
         public async Task<List<Customer>> GetAllCustomers()
         {
-            try
-            {
-                List<Customer> allCustomers = await _db.Customers.Select(c => new Customer
-                {
-                    id = c.id,
-                    firstname = c.firstname,
-                    lastname = c.lastname,
-                    address = c.address,
-                    zipCode = c.PostalAddress.zipCode,
-                    city = c.PostalAddress.city
-                }).ToListAsync();
-
-                return allCustomers;
-            }
-            catch
-            {
-                return null;
-            }   
-         }
-
-        public async Task <bool> Delete(int id)
-        {
-            try
-            {
-                Customers oneCustomer = await _db.Customers.FindAsync(id);
-                _db.Customers.Remove(oneCustomer);
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return await _db.GetAllCustomers();
         }
 
-        public async Task <Customer> GetOne(int id)
+        public async Task<bool> Delete(int id)
         {
-            try
-            {
-                Customers oneCustomer = await _db.Customers.FindAsync(id);
-                var getCustomer = new Customer()
-                {
-                    id = oneCustomer.id,
-                    firstname = oneCustomer.firstname,
-                    lastname = oneCustomer.lastname,
-                    address = oneCustomer.address,
-                    zipCode = oneCustomer.PostalAddress.zipCode,
-                    city = oneCustomer.PostalAddress.city
-                };
-
-                return getCustomer;
-
-            }
-            catch
-            {
-                return null;
-            }
+            return await _db.Delete(id);
         }
 
-        public async Task <bool> Edit(Customer editCustomer)
+        public async Task<Customer> GetOne(int id)
         {
-            try
-            {
-                Customers oneCustomer = await _db.Customers.FindAsync(editCustomer.id);
-                if (oneCustomer.PostalAddress.zipCode != editCustomer.zipCode)
-                {
-                    var existingPostalAddress = _db.PostalAddresses.Find(editCustomer.id);
-                    if (existingPostalAddress == null)
-                    {
-                        var newPostalAdressesField = new PostalAddresses();
-                        newPostalAdressesField.zipCode = editCustomer.zipCode;
-                        newPostalAdressesField.city = editCustomer.city;
-                        oneCustomer.PostalAddress = newPostalAdressesField;
-                    }
-                    else
-                    {
-                        oneCustomer.PostalAddress = existingPostalAddress;
-                    }
-                }
-                oneCustomer.firstname = editCustomer.firstname;
-                oneCustomer.lastname = editCustomer.lastname;
-                oneCustomer.address = editCustomer.address;
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return await _db.GetOne(id);
         }
-        
+
+        public async Task<bool> Edit(Customer editCustomer)
+        {
+            return await _db.Edit(editCustomer);
+        }
+
     }
 }
 
